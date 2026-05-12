@@ -5,6 +5,7 @@ import com.todoapp.crud.todoapp.service.ToDoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class ToDOController {
     }
 
     @PutMapping("/update/{id}")
-    public ToDo updateToDo( @PathVariable int id , @RequestBody ToDo todo){
+    public ToDo updateToDo( @PathVariable("id") int id , @RequestBody ToDo todo){
         boolean isToDoInList = toDoService.isToDoAvailabe(todo.getId());
         if(!isToDoInList){
             ToDo newTodo = toDoService.addToDo(todo);

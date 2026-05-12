@@ -1,6 +1,7 @@
 package com.todoapp.crud.todoapp.service;
 
 import com.todoapp.crud.todoapp.models.ToDo;
+import com.todoapp.crud.todoapp.repository.ToDoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +12,19 @@ import java.util.List;
 @Service
 public class ToDoService {
 
-    private List<ToDo> toDoList;
+    @Autowired
+    private final ToDoRepository toDoRepository;
+
+    public ToDoService(ToDoRepository toDoRepository) {
+        this.toDoRepository = toDoRepository;
+    }
 
     public void createToDoList(){
-        toDoList = new ArrayList<>();
+        toDoRepository.createTodoList();
     }
 
     public List<ToDo> getAllTodos(){
-        return toDoList;
+        return toDoRepository.getAllTodo();
     }
 
     public ToDo addToDo(ToDo todo){
@@ -27,47 +33,29 @@ public class ToDoService {
         Newtodo.setTitle(todo.getTitle());
         Newtodo.setStatus(todo.getStatus());
         Newtodo.setContent(todo.getContent());
-        toDoList.add(Newtodo);
+        toDoRepository.SaveToDo(Newtodo);
         return Newtodo;
     }
 
     public ToDo getToDoByID(int id){
 
-        for(ToDo t: toDoList){
-            if(t.getId() == id){
-                return t;
-            }
-        }
-        return null;
+        return toDoRepository.getToDo(id);
     }
 
     public boolean isToDoAvailabe(int toDoid){
-        boolean exists = false;
-        for(ToDo t: toDoList){
-            if(t.getId() == toDoid){
-                exists = true;
-                break;
-            }
+        List<ToDo> toDoList = toDoRepository.getAllTodo();
+        if(toDoList.size()==0){
+            return false;
         }
-        return exists;
+        return true;
     }
 
     public void updateToDo(int id , ToDo todo){
-        for(ToDo t : toDoList){
-            if(t.getId()==id){
-                t.setStatus(todo.getStatus());
-                t.setContent(todo.getContent());
-                t.setTitle(todo.getTitle());
-            }
-        }
+
+        toDoRepository.updateToDo(id,todo);
     }
 
     public void deleteToDo(int id){
-        for(int i=0;i<toDoList.size();i++){
-            if(toDoList.get(i).getId()==id){
-                toDoList.remove(i);
-                break;
-            }
-        }
+        toDoRepository.deleteToDo(id);
     }
 }
